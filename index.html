@@ -277,7 +277,7 @@
               
                 
                 <a class="post-title-link" href="/2017/01/02/yield和python3的yieldfrom的用法/" itemprop="url">
-                  未命名
+                  yield与yield from的思考
                 </a>
               
             
@@ -331,8 +331,7 @@
       
         
           
-            <p>=========================</p>
-<h1 id="title-yield与yield-from的思考"><a href="#title-yield与yield-from的思考" class="headerlink" title="title: yield与yield from的思考"></a>title: yield与yield from的思考</h1><h2 id="引入始末"><a href="#引入始末" class="headerlink" title="引入始末"></a>引入始末</h2><p>python3中出现的yield from对coroutine编程提供了极大的好处，那么在之前出现的yield关键字，充当一个什么样的作用呢。<br>原本的yield语句只能将cpu控制权还给调用者，(这里引申出一个重要的一点就是多线程编程与协程编程同样都是切换，一个是在cpu角度，一个是在用户程序角度)，当你想要在一个generater或者couroutine里带有yield语句的逻辑重构到另外一个generater中的时候，会非常麻烦。因为外层的生成器要为里层的生成器做消息传递，所以就需要吧这一层消息封装起来，这样有了yield from的出现</p>
+            <h2 id="引入始末"><a href="#引入始末" class="headerlink" title="引入始末"></a>引入始末</h2><p>python3中出现的yield from对coroutine编程提供了极大的好处，那么在之前出现的yield关键字，充当一个什么样的作用呢。<br>原本的yield语句只能将cpu控制权还给调用者，(这里引申出一个重要的一点就是多线程编程与协程编程同样都是切换，一个是在cpu角度，一个是在用户程序角度)，当你想要在一个generater或者couroutine里带有yield语句的逻辑重构到另外一个generater中的时候，会非常麻烦。因为外层的生成器要为里层的生成器做消息传递，所以就需要吧这一层消息封装起来，这样有了yield from的出现</p>
 <h2 id="例子说明"><a href="#例子说明" class="headerlink" title="例子说明"></a>例子说明</h2><p>当我们简单的使用yield去进行嵌套generater编程的时候，那么我们的代码会非常的繁琐，那么我们一起看看<br>‘’’python<br>def inner():<br>    coef = 1<br>    total = 0<br>    while True:<br>        try:<br>            input_val = yield total<br>            total = total + coef * input_val<br>        except SwitchSign:<br>            coef = -(coef)<br>        except BreakOut:<br>            return total<br>‘’’<br>那么外层的将会是这样，当然消费者生产者模型跟这个非常像<br>‘’’<br>def outer1():<br>    print(“Before inner(), I do this.”)<br>    i_gen = inner()<br>    input_val = None<br>    ret_val = i_gen.send(input_val)<br>    while True:<br>        try:<br>            input_val = yield ret_val<br>            ret_val = i_gen.send(input_val)<br>        except StopIteration:<br>            break<br>        except Exception as err:<br>            try:<br>                ret_val = i_gen.throw(err)<br>            except StopIteration:<br>                break<br>    print(“After inner(), I do that.”)<br>‘’’<br>那么如果说我们将其换成python3中yield from模式，那么我么就会得到如下的代码<br>‘’’<br>def outer2():<br>    print(“Before inner(), I do this.”)<br>    yield from inner()<br>    print(“After inner(), I do that.”)<br>‘’’<br>我们可以发现内外层的行为非常一致，消息一层一层的传递，外层对内存的调度，yied from就封装了消息传递和调度作用</p>
 
           
