@@ -251,6 +251,128 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/28/algorithm_graph1/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="fairleehu">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/fairleehu.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="大胡子">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="大胡子" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/02/28/algorithm_graph1/" itemprop="url">
+                  未命名
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-28T14:35:34+08:00">
+                2017-02-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h2 id="title-数据结构与算法系列之无向加权图的最小生成树算法-Prim算法"><a href="#title-数据结构与算法系列之无向加权图的最小生成树算法-Prim算法" class="headerlink" title="title:数据结构与算法系列之无向加权图的最小生成树算法-Prim算法"></a>title:数据结构与算法系列之无向加权图的最小生成树算法-Prim算法</h2><p>##解决问题<br>本算法主要解决的是无向加权图中找出权值最小的最小生成树，关于什么是最小生成树等基本概念本文不介绍</p>
+<p>##问题<br>假设点A,B,C,D,E,F，两点之间有连线的，以及它们的距离分别是：(A-B:7),(A-D:5),(B-C:8),(B-D:9),(B-E:7),(C-E:5),(D-E:15),(D-F:6),(E-F:8),(E-G:9),(F-G:11)<br>那么首先通过图的邻接矩阵表示形式，如下：<br>edges = [ (“A”, “B”, 7), (“A”, “D”, 5), (“B”, “C”, 8), (“B”, “D”, 9), (“B”, “E”, 7), (“C”, “E”, 5), (“D”, “E”, 15), (“D”, “F”, 6), (“E”, “F”, 8), (“E”, “G”, 9), (“F”, “G”, 11) ]<br>求出最小生成树？</p>
+<p>##算法实现<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#encoding=utf-8</span></div><div class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</div><div class="line"><span class="keyword">from</span> heapq <span class="keyword">import</span> *</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">prim</span><span class="params">( vertexs, edges )</span>:</span></div><div class="line">    adjacent_vertex = defaultdict(list)</div><div class="line">    <span class="keyword">for</span> v1,v2,length <span class="keyword">in</span> edges:</div><div class="line">        adjacent_vertex[v1].append((length, v1, v2))</div><div class="line">        adjacent_vertex[v2].append((length, v2, v1))</div><div class="line"></div><div class="line">    mst = []</div><div class="line">    chosed = set(vertexs[<span class="number">0</span>])</div><div class="line"></div><div class="line">    adjacent_vertexs_edges = adjacent_vertex[vertexs[<span class="number">0</span>]]  </div><div class="line"></div><div class="line">    heapify(adjacent_vertexs_edges)</div><div class="line"></div><div class="line">    <span class="keyword">while</span> adjacent_vertexs_edges:</div><div class="line">        w, v1, v2 = heappop(adjacent_vertexs_edges)</div><div class="line">        <span class="keyword">if</span> v2 <span class="keyword">not</span> <span class="keyword">in</span> chosed:</div><div class="line">            chosed.add(v2)                    </div><div class="line">            mst.append((v1,v2,w))   </div><div class="line">            <span class="keyword">for</span> next_vertex <span class="keyword">in</span> adjacent_vertex[v2]:            </div><div class="line">                <span class="keyword">if</span> next_vertex[<span class="number">2</span>] <span class="keyword">not</span> <span class="keyword">in</span> chosed:</div><div class="line">                    heappush( adjacent_vertexs_edges,next_vertex)</div><div class="line"></div><div class="line">    <span class="keyword">return</span> mst</div><div class="line"></div><div class="line"></div><div class="line">vertexs = list(<span class="string">"ABCDEFG"</span>)</div><div class="line">edges = [ (<span class="string">"A"</span>, <span class="string">"B"</span>, <span class="number">7</span>), (<span class="string">"A"</span>, <span class="string">"D"</span>, <span class="number">5</span>),</div><div class="line">          (<span class="string">"B"</span>, <span class="string">"C"</span>, <span class="number">8</span>), (<span class="string">"B"</span>, <span class="string">"D"</span>, <span class="number">9</span>),</div><div class="line">          (<span class="string">"B"</span>, <span class="string">"E"</span>, <span class="number">7</span>), (<span class="string">"C"</span>, <span class="string">"E"</span>, <span class="number">5</span>),</div><div class="line">          (<span class="string">"D"</span>, <span class="string">"E"</span>, <span class="number">15</span>), (<span class="string">"D"</span>, <span class="string">"F"</span>, <span class="number">6</span>),</div><div class="line">          (<span class="string">"E"</span>, <span class="string">"F"</span>, <span class="number">8</span>), (<span class="string">"E"</span>, <span class="string">"G"</span>, <span class="number">9</span>),</div><div class="line">          (<span class="string">"F"</span>, <span class="string">"G"</span>, <span class="number">11</span>)]</div><div class="line"></div><div class="line"><span class="keyword">print</span> <span class="string">"edges:"</span>,edges</div><div class="line"><span class="keyword">print</span> <span class="string">"prim:"</span>, prim( vertexs, edges )</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/28/algorithm_graph2/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -294,124 +416,6 @@
                 <span class="post-meta-item-text">发表于</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-28T14:08:06+08:00">
-                2017-02-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/28/algorithm_graph1/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="fairleehu">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/images/fairleehu.jpg">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="大胡子">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="大胡子" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/28/algorithm_graph1/" itemprop="url">
-                  未命名
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-28T14:08:02+08:00">
                 2017-02-28
               </time>
             
